@@ -11,9 +11,12 @@ public class Config {
 	public static final String ConfigDevUrl;
 	public static final String ConfigDevUsername;
 	public static final String ConfigDevPassword;
+	public static final String IEServerLocation;
+	public static final String ChromeServerLocation;
+	public static final String PhantomJSLocation;
 	public static final int TIMEOUT;
 	public static final int THREADS_TO_CRAWL;
-//	public static String step;
+
 	static {
 		Map<String, String> map=new ExcelManager().readConfigData();
 		BROWSER_TYPE=map.get("Browser");
@@ -22,5 +25,8 @@ public class Config {
 		ConfigDevUrl=map.get("ConfigDevUrl");
 		ConfigDevUsername=map.get("ConfigDevUsername");
 		ConfigDevPassword=map.get("ConfigDevPassword");
+		IEServerLocation=map.get("IEServerLocation");
+		ChromeServerLocation=map.get("ChromeServerLocation");
+		PhantomJSLocation=map.get("PhantomJSLocation");
 	}
 }

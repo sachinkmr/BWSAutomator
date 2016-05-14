@@ -28,7 +28,7 @@ public class ExcelManager {
 		try {
 			f = new FileInputStream(new File("Resources/Config.xlsx"));
 			this.workbook = new XSSFWorkbook(f);
-			this.sheet = workbook.getSheetAt(0);
+			this.sheet = workbook.getSheet("Config");
 		} catch (FileNotFoundException ex) {
 			Logger.getLogger(ExcelManager.class.getName()).log(Level.WARN, null, ex);
 		} catch (IOException ex) {

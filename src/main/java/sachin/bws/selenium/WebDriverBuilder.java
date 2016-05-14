@@ -54,12 +54,9 @@ public class WebDriverBuilder {
 
 	// block to set path of all the driver exes and servers
 	static {
-		System.setProperty("webdriver.chrome.driver",
-				"Resources" + File.separator + "servers" + File.separator + "chromedriver.exe"); // setting chrome driver path
-		System.setProperty("webdriver.ie.driver",
-				"Resources" + File.separator + "servers" + File.separator + "IEDriverServer.exe"); // setting IE driver path
-		System.setProperty("phantomjs.binary.path", "Resources" + File.separator + "servers" + File.separator + "phantomjs.exe");
-
+		System.setProperty("webdriver.chrome.driver",Config.ChromeServerLocation); // setting chrome driver path
+		System.setProperty("webdriver.ie.driver",Config.IEServerLocation); // setting IE driver path
+		System.setProperty("phantomjs.binary.path",Config.PhantomJSLocation);
 	}
 
 	public WebDriver getFirefoxDriver(Site site) {
