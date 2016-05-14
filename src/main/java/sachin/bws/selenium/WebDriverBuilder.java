@@ -122,8 +122,12 @@ public class WebDriverBuilder {
 		}
 		proxy.removeHeader("user-agent");
 		proxy.addHeader("user-agent", site.getUserAgent());
-		DesiredCapabilities cap = new DesiredCapabilities();
-		cap.setCapability(CapabilityType.PROXY, proxy);
+		DesiredCapabilities capabilitiesIE = DesiredCapabilities.internetExplorer();
+		capabilitiesIE.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
+		capabilitiesIE.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
+		capabilitiesIE.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
+		capabilitiesIE.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+		capabilitiesIE.setCapability(CapabilityType.PROXY, proxy);
         String exe = "Resources" + File.separator + "servers" + File.separator + "IEDriverServer.exe";
         InternetExplorerDriverService.Builder serviceBuilder = new InternetExplorerDriverService.Builder();
         serviceBuilder.usingAnyFreePort(); // This specifies that sever can pick any available free port to start
@@ -131,7 +135,7 @@ public class WebDriverBuilder {
         serviceBuilder.withLogLevel(InternetExplorerDriverLogLevel.TRACE); //Specifies the log level of the server
         serviceBuilder.withLogFile(new File("Logs\\logFile.txt")); //Specify the log file. Change it based on your system
         InternetExplorerDriverService service = serviceBuilder.build(); //Create a driver service and pass it to Internet explorer driver instance
-        WebDriver driver = new InternetExplorerDriver(service,cap);
+        WebDriver driver = new InternetExplorerDriver(service,capabilitiesIE);
 //        InternetExplorerDriver driver = new InternetExplorerDriver(service);
 //        System.setProperty("webdriver.ie.driver", service);
 //        WebDriver driver = new InternetExplorerDriver();
@@ -279,5 +283,26 @@ public class WebDriverBuilder {
 		proxy.addHeader("Authorization", "Basic " + base64login);
 
 	}
+	public WebDriver getIEDriver() {
+		DesiredCapabilities capabilitiesIE = DesiredCapabilities.internetExplorer();
+		capabilitiesIE.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
+		capabilitiesIE.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
+		capabilitiesIE.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
+		capabilitiesIE.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+        String exe = "Resources" + File.separator + "servers" + File.separator + "IEDriverServer.exe";
+        InternetExplorerDriverService.Builder serviceBuilder = new InternetExplorerDriverService.Builder();
+        serviceBuilder.usingAnyFreePort(); // This specifies that sever can pick any available free port to start
+        serviceBuilder.usingDriverExecutable(new File(exe)); //Tell it where you server exe is
+        serviceBuilder.withLogLevel(InternetExplorerDriverLogLevel.TRACE); //Specifies the log level of the server
+        serviceBuilder.withLogFile(new File("Logs\\logFile.txt")); //Specify the log file. Change it based on your system
+        InternetExplorerDriverService service = serviceBuilder.build(); //Create a driver service and pass it to Internet explorer driver instance
+        WebDriver driver = new InternetExplorerDriver(service,capabilitiesIE);
+//        InternetExplorerDriver driver = new InternetExplorerDriver(service);
+//        System.setProperty("webdriver.ie.driver", service);
+//        WebDriver driver = new InternetExplorerDriver();
+		driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Config.TIMEOUT, TimeUnit.MILLISECONDS);
+        return driver;
+    }
 
 }

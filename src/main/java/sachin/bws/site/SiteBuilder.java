@@ -29,7 +29,6 @@ import sachin.bws.helpers.HelperClass;
 import sachin.bws.helpers.URLCanonicalizer;
 import sachin.bws.selenium.WebDriverBuilder;
 
-
 /**
  *
  * @author sku202
@@ -81,9 +80,10 @@ public class SiteBuilder extends Site {
 	public String getUrlWithAuth() {
 		return urlWithAuth;
 	}
+
 	@Override
 	public String setUrlWithAuth(String add) {
-		String urlauth=add;
+		String urlauth = add;
 		if (this.hasAuthentication()) {
 			URL address = null;
 			try {
@@ -107,7 +107,7 @@ public class SiteBuilder extends Site {
 
 	public SiteBuilder(String url) {
 		super(url);
-		this.url=url;
+		this.url = url;
 	}
 
 	public Site build() {
@@ -121,6 +121,9 @@ public class SiteBuilder extends Site {
 
 	private void initialize() throws Exception {
 		this.startTime = HelperClass.generateUniqueString();
+        ConfigDev config = ConfigDev.getInstance();
+        config.new SiteConfig(url, brandName, environment, culture);
+        this.siteJSON = HelperClass.readJsonFromFile(HelperClass.getLatestSiteConfigFile(url).getAbsolutePath());
 		try {
 			host = new URL(url).getHost();
 		} catch (MalformedURLException ex) {
@@ -165,7 +168,7 @@ public class SiteBuilder extends Site {
 		} catch (IOException ex) {
 			Logger.getLogger(Site.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		this.urlWithAuth=setUrlWithAuth(url);
+		this.urlWithAuth = setUrlWithAuth(url);
 	}
 
 	@Override
@@ -208,6 +211,26 @@ public class SiteBuilder extends Site {
 		return this;
 	}
 
+	public SiteBuilder setCrawling(boolean crawling) {
+		this.crawling = crawling;
+		return this;
+	}
+
+	public SiteBuilder setBrandName(String brandName) {
+		this.brandName = brandName;
+		return this;
+	}
+
+	public SiteBuilder setCulture(String culture) {
+		this.culture = culture;
+		return this;
+	}
+
+	public SiteBuilder setEnvironment(String environment) {
+		this.environment = environment;
+		return this;
+	}
+
 	/**
 	 * set time out for the url.
 	 *
@@ -218,6 +241,11 @@ public class SiteBuilder extends Site {
 	public SiteBuilder setTimeout(int timeout) {
 		this.timeout = timeout;
 		return this;
+	}
+
+	@Override
+	public boolean isCrawling() {
+		return this.crawling;
 	}
 
 }

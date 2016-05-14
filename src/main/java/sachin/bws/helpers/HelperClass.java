@@ -6,14 +6,26 @@
 package sachin.bws.helpers;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
+
+import sachin.bws.site.UrlLink;
 
 
 /**
@@ -21,6 +33,99 @@ import org.apache.log4j.Logger;
  * @author sku202
  */
 public class HelperClass {
+
+
+    /**
+     * Method to read results.
+     *
+     * @param host brand name of the BWS file
+     * @return JSON data as JSON object
+     */
+    public synchronized static JSONObject readAllResults(String host) {
+        File file = new File(HelperClass.getCrawledDataRepository(host), "AllResults.json");
+        return readJsonFromFile(file.getAbsolutePath());
+    }
+
+    /**
+     * Method to read JSON from a file.
+     *
+     * @param file JSON file path(Absolute path)
+     * @return JSON data in file
+     */
+    public synchronized static JSONObject readJsonFromFile(String file) {
+        String data = null;
+        JSONObject json = null;
+        FileReader reader = null;
+        try {
+            reader = new FileReader(file);
+            data = IOUtils.toString(reader);
+            json = new JSONObject(data);
+            reader.close();
+        } catch (Exception ex) {
+        	Logger.getLogger(HelperClass.class.getName()).log(Level.WARN, null, ex);
+        }
+        return json;
+    }
+
+    /**
+     * Method to get latest modified siteConfig JSON file.
+     *
+     * @param siteURL Address of site
+     * @return JSON of site config for a site as File object
+     */
+    public static File getLatestSiteConfigFile(String siteURL) {
+        File file = new File("Data" + File.separator + HelperClass.getModifiedHostName(siteURL));
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        file = new File(file, "siteConfig.json");
+        return file;
+    }
+
+
+    /**
+     * To save crawled data to a JSON file for a site. Site host name is
+     * provided as input
+     *
+     * @param links List of UrlLink of the site after crawling
+     * @param host name of host of the site.
+     */
+    public static synchronized void saveCrawlingData(List<UrlLink> links, String host) {
+        host=HelperClass.getCrawledDataFilename(host);
+        try {
+            File f = new File(getCrawledDataRepository(host), host);
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f))) {
+                oos.writeObject(links);
+                oos.close();
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(HelperClass.class.getName()).log(Level.WARN, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(HelperClass.class.getName()).log(Level.WARN, null, ex);
+        }
+    }
+
+    /**
+     * Method is used to read crawled data from a JSON file for a site. Site
+     * host name is provided as input
+     *
+     * @param host name of host of the site.
+     * @return list of UrlLinks from JSON file of host
+     */
+    @SuppressWarnings("unchecked")
+	public synchronized static List<UrlLink> readCrawlingData(String host) {
+        List<UrlLink> links = null;
+        host=HelperClass.getCrawledDataFilename(host);
+        try {
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File(HelperClass.getCrawledDataRepository(host), host)))) {
+                links = (List<UrlLink>) ois.readObject();
+            }
+        } catch (IOException | ClassNotFoundException ex) {
+            Logger.getLogger(HelperClass.class.getName()).log(Level.WARN, null, ex);
+        }
+        return links;
+    }
+
 
 	/**
 	 * Method to get modified host name. return host does not contain .com, www.
@@ -106,7 +211,7 @@ public class HelperClass {
 	 */
 	public static String getCrawledDataRepository(String host) {
 		host = HelperClass.getCrawledDataFilename(host);
-		File f = new File(HelperClass.getAppPath() + File.separator + "output" + File.separator + "crawledData"
+		File f = new File(HelperClass.getAppPath() + File.separator + "Data" + File.separator + "crawledData"
 				+ File.separator + host);
 		f.mkdirs();
 		return f.getAbsolutePath();
