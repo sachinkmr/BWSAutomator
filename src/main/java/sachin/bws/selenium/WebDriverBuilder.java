@@ -23,9 +23,14 @@ import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
 import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.BrowserMobProxyServer;
 import net.lightbody.bmp.client.ClientUtil;
+import net.lightbody.bmp.filters.RequestFilter;
+import net.lightbody.bmp.util.HttpMessageContents;
+import net.lightbody.bmp.util.HttpMessageInfo;
 import sachin.bws.exceptions.BWSException;
 import sachin.bws.helpers.Config;
 import sachin.bws.site.Site;
@@ -41,6 +46,24 @@ public class WebDriverBuilder {
     private boolean proxyCheck;
 	private WebDriver driver;
 	Proxy seleniumProxy;
+
+	public WebDriverBuilder(String username,String password) {
+		super();
+		proxyCheck = true;
+        proxy = new BrowserMobProxyServer();
+        proxy.setHostNameResolver(ClientUtil.createDnsJavaResolver());
+        proxy.setHostNameResolver(ClientUtil.createNativeCacheManipulatingResolver());
+        proxy.start(0);
+        proxy.addRequestFilter(new RequestFilter(){
+        	final String login = username + ":" + password;
+            final String base64login = new String(Base64.encodeBase64(login.getBytes()));
+			@Override
+			public HttpResponse filterRequest(HttpRequest request, HttpMessageContents arg1, HttpMessageInfo arg2) {
+				request.headers().add("Authorization", "Basic " + base64login);
+				return null;
+			}});
+        seleniumProxy = ClientUtil.createSeleniumProxy(proxy);
+	}
 
 	public WebDriverBuilder() {
 		super();
@@ -60,9 +83,6 @@ public class WebDriverBuilder {
 	}
 
 	public WebDriver getFirefoxDriver(Site site) {
-		if(site.hasAuthentication()){
-			this.authenticate(site.getUsername(), site.getPassword());
-		}
         try {
             FirefoxProfile ffp = new FirefoxProfile();
     		ffp.setPreference("general.useragent.override", site.getUserAgent());
@@ -89,9 +109,6 @@ public class WebDriverBuilder {
     }
 
 	public WebDriver getHeadLessDriver(Site site) {
-		if(site.hasAuthentication()){
-			this.authenticate(site.getUsername(), site.getPassword());
-		}
         DesiredCapabilities caps = DesiredCapabilities.phantomjs();
         caps.setJavascriptEnabled(true);
         caps.setCapability("takesScreenshot", true);
@@ -114,9 +131,6 @@ public class WebDriverBuilder {
     }
 
 	public WebDriver getIEDriver(Site site) {
-		if(site.hasAuthentication()){
-			this.authenticate(site.getUsername(), site.getPassword());
-		}
 		proxy.removeHeader("user-agent");
 		proxy.addHeader("user-agent", site.getUserAgent());
 		DesiredCapabilities capabilitiesIE = DesiredCapabilities.internetExplorer();
@@ -147,9 +161,6 @@ public class WebDriverBuilder {
     }
 
 	public WebDriver getChromeDriver(Site site) {
-		if(site.hasAuthentication()){
-			this.authenticate(site.getUsername(), site.getPassword());
-		}
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--user-agent="+site.getUserAgent());
 		DesiredCapabilities capabilities = DesiredCapabilities.chrome();
@@ -274,12 +285,7 @@ public class WebDriverBuilder {
         }
     }
 
-	private void authenticate(String username,String password){
-		String login = username + ":" + password;
-        String base64login = new String(Base64.encodeBase64(login.getBytes()));
-		proxy.addHeader("Authorization", "Basic " + base64login);
 
-	}
 	public WebDriver getIEDriver() {
 		DesiredCapabilities capabilitiesIE = DesiredCapabilities.internetExplorer();
 		capabilitiesIE.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
