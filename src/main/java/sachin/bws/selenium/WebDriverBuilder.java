@@ -53,7 +53,7 @@ public class WebDriverBuilder {
         proxy = new BrowserMobProxyServer();
         proxy.setHostNameResolver(ClientUtil.createDnsJavaResolver());
         proxy.setHostNameResolver(ClientUtil.createNativeCacheManipulatingResolver());
-        proxy.start(0);
+//        proxy.addFirstHttpFilterFactory(new RequestFilterAdapter.FilterSource(filter, 16777216));
         proxy.addRequestFilter(new RequestFilter(){
         	final String login = username + ":" + password;
             final String base64login = new String(Base64.encodeBase64(login.getBytes()));
@@ -62,6 +62,7 @@ public class WebDriverBuilder {
 				request.headers().add("Authorization", "Basic " + base64login);
 				return null;
 			}});
+        proxy.start(0);
         seleniumProxy = ClientUtil.createSeleniumProxy(proxy);
 	}
 
@@ -100,8 +101,6 @@ public class WebDriverBuilder {
     			driver.manage().window().maximize();
     		}
     		driver.manage().timeouts().implicitlyWait(Config.TIMEOUT, TimeUnit.MILLISECONDS);
-    		driver = new FirefoxDriver(caps);
-
         } catch (Exception ex) {
             Logger.getLogger(WebDriverBuilder.class.getName()).log(Level.WARN, null, ex);
         }
@@ -120,6 +119,7 @@ public class WebDriverBuilder {
             caps.setCapability("phantomjs.page.settings.userName", site.getUsername());
             caps.setCapability("phantomjs.page.settings.password", site.getPassword());
         }
+        driver=new PhantomJSDriver(caps);
         if (site.getViewPortHeight() > 0 && site.getViewPortWidth() > 0) {
 			Dimension s = new Dimension(site.getViewPortWidth(), site.getViewPortHeight());
 			driver.manage().window().setSize(s);
@@ -127,29 +127,25 @@ public class WebDriverBuilder {
 			driver.manage().window().maximize();
 		}
         driver.manage().timeouts().implicitlyWait(Config.TIMEOUT, TimeUnit.MILLISECONDS);
-        return  new PhantomJSDriver(caps);
+        return driver;
     }
 
 	public WebDriver getIEDriver(Site site) {
-		proxy.removeHeader("user-agent");
-		proxy.addHeader("user-agent", site.getUserAgent());
 		DesiredCapabilities capabilitiesIE = DesiredCapabilities.internetExplorer();
 		capabilitiesIE.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
 		capabilitiesIE.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
 		capabilitiesIE.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
 		capabilitiesIE.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 		capabilitiesIE.setCapability(CapabilityType.PROXY, proxy);
+		capabilitiesIE.setCapability(InternetExplorerDriver.IE_USE_PRE_PROCESS_PROXY, proxy);
         String exe = "Resources" + File.separator + "servers" + File.separator + "IEDriverServer.exe";
         InternetExplorerDriverService.Builder serviceBuilder = new InternetExplorerDriverService.Builder();
         serviceBuilder.usingAnyFreePort(); // This specifies that sever can pick any available free port to start
         serviceBuilder.usingDriverExecutable(new File(exe)); //Tell it where you server exe is
-        serviceBuilder.withLogLevel(InternetExplorerDriverLogLevel.TRACE); //Specifies the log level of the server
+        serviceBuilder.withLogLevel(InternetExplorerDriverLogLevel.WARN); //Specifies the log level of the server
         serviceBuilder.withLogFile(new File("Logs\\logFile.txt")); //Specify the log file. Change it based on your system
         InternetExplorerDriverService service = serviceBuilder.build(); //Create a driver service and pass it to Internet explorer driver instance
-        WebDriver driver = new InternetExplorerDriver(service,capabilitiesIE);
-//        InternetExplorerDriver driver = new InternetExplorerDriver(service);
-//        System.setProperty("webdriver.ie.driver", service);
-//        WebDriver driver = new InternetExplorerDriver();
+        driver = new InternetExplorerDriver(service,capabilitiesIE);
         if (site.getViewPortHeight() > 0 && site.getViewPortWidth() > 0) {
 			Dimension s = new Dimension(site.getViewPortWidth(), site.getViewPortHeight());
 			driver.manage().window().setSize(s);
@@ -184,7 +180,7 @@ public class WebDriverBuilder {
 	 * server if any is running as system processes.
 	 *
 	 **/
-	private void killIEService() {
+	static void killIEService() {
 		String serviceName = "IEDriverServer.exe";
 		try {
 			if (ProcessKiller.isProcessRunning(serviceName)) {
@@ -200,7 +196,7 @@ public class WebDriverBuilder {
 	 * any is running as system processes.
 	 *
 	 **/
-	private void killChromeService() {
+	static void killChromeService() {
 		String serviceName = "chromedriver.exe";
 		try {
 			if (ProcessKiller.isProcessRunning(serviceName)) {
@@ -215,7 +211,7 @@ public class WebDriverBuilder {
 	 * any is running as system processes.
 	 *
 	 **/
-	private  void killPhantomJS() {
+	static  void killPhantomJS() {
         String serviceName = "phtantomjs.exe";
         try {
             if (ProcessKiller.isProcessRunning(serviceName)) {
@@ -233,14 +229,12 @@ public class WebDriverBuilder {
 	 **/
 	public void destroy() {
 		if (proxy != null) {
-            proxy.abort();
+            proxy.stop();
         }
 		if(null!=driver){
 			driver.quit();
 		}
-		killChromeService();
-		killIEService();
-		killPhantomJS();
+
 	}
 
 	/**
@@ -296,10 +290,10 @@ public class WebDriverBuilder {
         InternetExplorerDriverService.Builder serviceBuilder = new InternetExplorerDriverService.Builder();
         serviceBuilder.usingAnyFreePort(); // This specifies that sever can pick any available free port to start
         serviceBuilder.usingDriverExecutable(new File(exe)); //Tell it where you server exe is
-        serviceBuilder.withLogLevel(InternetExplorerDriverLogLevel.TRACE); //Specifies the log level of the server
+        serviceBuilder.withLogLevel(InternetExplorerDriverLogLevel.WARN); //Specifies the log level of the server
         serviceBuilder.withLogFile(new File("Logs\\logFile.txt")); //Specify the log file. Change it based on your system
         InternetExplorerDriverService service = serviceBuilder.build(); //Create a driver service and pass it to Internet explorer driver instance
-        WebDriver driver = new InternetExplorerDriver(service,capabilitiesIE);
+        driver = new InternetExplorerDriver(service,capabilitiesIE);
 //        InternetExplorerDriver driver = new InternetExplorerDriver(service);
 //        System.setProperty("webdriver.ie.driver", service);
 //        WebDriver driver = new InternetExplorerDriver();
@@ -307,5 +301,17 @@ public class WebDriverBuilder {
         driver.manage().timeouts().implicitlyWait(Config.TIMEOUT, TimeUnit.MILLISECONDS);
         return driver;
     }
+
+
+	/**
+	 * This method is used to kill all server instances
+	 *
+	 *
+	 **/
+	public static void killServers(){
+		killChromeService();
+		killIEService();
+		killPhantomJS();
+	}
 
 }
