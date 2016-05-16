@@ -136,8 +136,8 @@ public class WebDriverBuilder {
 		capabilitiesIE.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
 		capabilitiesIE.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
 		capabilitiesIE.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-		capabilitiesIE.setCapability(CapabilityType.PROXY, proxy);
-		capabilitiesIE.setCapability(InternetExplorerDriver.IE_USE_PRE_PROCESS_PROXY, proxy);
+		capabilitiesIE.setCapability(CapabilityType.PROXY, seleniumProxy);
+//		capabilitiesIE.setCapability(InternetExplorerDriver.IE_USE_PRE_PROCESS_PROXY, seleniumProxy);
         String exe = "Resources" + File.separator + "servers" + File.separator + "IEDriverServer.exe";
         InternetExplorerDriverService.Builder serviceBuilder = new InternetExplorerDriverService.Builder();
         serviceBuilder.usingAnyFreePort(); // This specifies that sever can pick any available free port to start
