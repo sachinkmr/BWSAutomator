@@ -67,13 +67,6 @@ public class WebDriverBuilder {
 	}
 
 	public WebDriverBuilder() {
-		super();
-		proxyCheck = true;
-        proxy = new BrowserMobProxyServer();
-        proxy.setHostNameResolver(ClientUtil.createDnsJavaResolver());
-        proxy.setHostNameResolver(ClientUtil.createNativeCacheManipulatingResolver());
-        proxy.start(0);
-        seleniumProxy = ClientUtil.createSeleniumProxy(proxy);
 	}
 
 	// block to set path of all the driver exes and servers
@@ -91,6 +84,7 @@ public class WebDriverBuilder {
     		caps.setJavascriptEnabled(true);
     		caps.setCapability(FirefoxDriver.PROFILE, ffp);
     		caps.setCapability("takesScreenshot", true);
+    		if(site.hasAuthentication())
     		caps.setCapability(CapabilityType.PROXY, seleniumProxy);
     		// User Name & Password Settings
     		driver = new FirefoxDriver(caps);
@@ -136,6 +130,7 @@ public class WebDriverBuilder {
 		capabilitiesIE.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
 		capabilitiesIE.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
 		capabilitiesIE.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+		if(site.hasAuthentication())
 		capabilitiesIE.setCapability(CapabilityType.PROXY, seleniumProxy);
 //		capabilitiesIE.setCapability(InternetExplorerDriver.IE_USE_PRE_PROCESS_PROXY, seleniumProxy);
         String exe = "Resources" + File.separator + "servers" + File.separator + "IEDriverServer.exe";
@@ -161,6 +156,7 @@ public class WebDriverBuilder {
 		options.addArguments("--user-agent="+site.getUserAgent());
 		DesiredCapabilities capabilities = DesiredCapabilities.chrome();
 		capabilities.setJavascriptEnabled(true);
+		if(site.hasAuthentication())
 		capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
 		capabilities.setCapability("chrome.switches", Arrays.asList("--ignore-certificate-errors"));
 		capabilities.setCapability(ChromeOptions.CAPABILITY, options);

@@ -7,6 +7,7 @@ package sachin.bws.site;
 
 import java.io.Serializable;
 import java.util.Objects;
+
 import org.jsoup.nodes.Document;
 
 /**
