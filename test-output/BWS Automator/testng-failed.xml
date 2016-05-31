@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [BWS Automator]">
+  <test name="Demo">
+    <classes>
+      <class name="sachin.bws.site.TestNG"/>
+    </classes>
+  </test> <!-- Demo -->
+</suite> <!-- Failed suite [BWS Automator] -->

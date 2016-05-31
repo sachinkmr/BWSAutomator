@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="1" passed="1">
+  <reporter-output>
+  </reporter-output>
+  <suite name="BWS Automator" duration-ms="40416" started-at="2016-05-31T11:00:10Z" finished-at="2016-05-31T11:00:50Z">
+    <groups>
+    </groups>
+    <test name="Demo" duration-ms="40416" started-at="2016-05-31T11:00:10Z" finished-at="2016-05-31T11:00:50Z">
+      <class name="sachin.bws.site.TestNG">
+        <test-method status="PASS" signature="setUp()[pri:0, instance:sachin.bws.site.TestNG@d7b1517]" name="setUp" is-config="true" duration-ms="67574" started-at="2016-05-31T16:29:02Z" finished-at="2016-05-31T16:30:10Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method status="PASS" signature="test()[pri:0, instance:sachin.bws.site.TestNG@d7b1517]" name="test" duration-ms="40397" started-at="2016-05-31T16:30:10Z" finished-at="2016-05-31T16:30:50Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- test -->
+        <test-method status="PASS" signature="tearDown()[pri:0, instance:sachin.bws.site.TestNG@d7b1517]" name="tearDown" is-config="true" duration-ms="832" started-at="2016-05-31T16:30:50Z" finished-at="2016-05-31T16:30:51Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+      </class> <!-- sachin.bws.site.TestNG -->
+    </test> <!-- Demo -->
+  </suite> <!-- BWS Automator -->
+</testng-results>
