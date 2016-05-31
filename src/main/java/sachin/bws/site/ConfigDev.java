@@ -160,6 +160,7 @@ public class ConfigDev extends ConfigService {
             this.envName = envName;
             try {
                 if (envName.equals("PROD")) {
+                	if(!HelperClass.getLatestSiteConfigFile(siteURL).exists())
                     getConfigJSONProd();
                 } else {
                     getConfigJSON();
@@ -206,38 +207,6 @@ public class ConfigDev extends ConfigService {
                 Logger.getLogger(ConfigDev.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
-//                Robot rb = new Robot();
-//
-//                //Enter user name by ctrl-v
-//                StringSelection username1 = new StringSelection(username);
-//                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(username1, null);
-//                rb.keyPress(KeyEvent.VK_CONTROL);
-//                rb.keyPress(KeyEvent.VK_A);
-//                rb.keyRelease(KeyEvent.VK_A);
-//                rb.keyPress(KeyEvent.VK_V);
-//                rb.keyRelease(KeyEvent.VK_V);
-//                rb.keyRelease(KeyEvent.VK_CONTROL);
-//
-//                //tab to password entry field
-//                rb.keyPress(KeyEvent.VK_TAB);
-//                rb.keyRelease(KeyEvent.VK_TAB);
-//                Thread.sleep(2000);
-//
-//                //Enter password by ctrl-v
-//                StringSelection pwd = new StringSelection(password);
-//                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(pwd, null);
-//                rb.keyPress(KeyEvent.VK_CONTROL);
-//                rb.keyPress(KeyEvent.VK_A);
-//                rb.keyRelease(KeyEvent.VK_A);
-//                rb.keyPress(KeyEvent.VK_V);
-//                rb.keyRelease(KeyEvent.VK_V);
-//                rb.keyRelease(KeyEvent.VK_CONTROL);
-//
-//                //press enter
-//                rb.keyPress(KeyEvent.VK_ENTER);
-//                rb.keyRelease(KeyEvent.VK_ENTER);
-//
-//                //wait
                 Thread.sleep(5000);
                 String command = "Resources" + File.separator + "servers" + File.separator + "WindowsLoginPopUp.exe " + username + " " + password;
                 ProcessBuilder process = new ProcessBuilder("cmd.exe", "/c", command);
