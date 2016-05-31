@@ -94,7 +94,6 @@ public class WebDriverBuilder {
     		} else {
     			driver.manage().window().maximize();
     		}
-    		driver.manage().timeouts().implicitlyWait(Config.TIMEOUT, TimeUnit.MILLISECONDS);
         } catch (Exception ex) {
             Logger.getLogger(WebDriverBuilder.class.getName()).log(Level.WARN, null, ex);
         }
@@ -120,7 +119,6 @@ public class WebDriverBuilder {
 		} else {
 			driver.manage().window().maximize();
 		}
-        driver.manage().timeouts().implicitlyWait(Config.TIMEOUT, TimeUnit.MILLISECONDS);
         return driver;
     }
 
@@ -147,7 +145,6 @@ public class WebDriverBuilder {
 		} else {
 			driver.manage().window().maximize();
 		}
-        driver.manage().timeouts().implicitlyWait(Config.TIMEOUT, TimeUnit.MILLISECONDS);
         return driver;
     }
 
@@ -167,7 +164,6 @@ public class WebDriverBuilder {
 		} else {
 			driver.manage().window().maximize();
 		}
-        driver.manage().timeouts().implicitlyWait(Config.TIMEOUT, TimeUnit.MILLISECONDS);
 		return driver;
 	}
 

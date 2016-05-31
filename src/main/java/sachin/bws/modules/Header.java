@@ -3,6 +3,7 @@ package sachin.bws.modules;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -43,7 +44,7 @@ public class Header {
 	private TopNavigation topNav;
 
 	public Header(WebDriver driver) {
-//		this.driver = driver;
+		// this.driver = driver;
 		PageFactory.initElements(driver, this);
 		topNav = new TopNavigation(driver);
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
@@ -53,14 +54,17 @@ public class Header {
 		this.logo.click();
 	}
 
-	public TopNavigation getTopNav(){
+	public TopNavigation getTopNav() {
 		return topNav;
 	}
 
-	public SignUpPage openSignUpPage(){
-		if(WrapperMethods.isPresent(driver,signup))
-			throw new SkipException("Signup link is not present in header");
-		this.signup.click();
+	public SignUpPage openSignUpPage() {
+		try{
+			this.signup.click();
+		}catch(NoSuchElementException ex){
+			throw new SkipException(
+					"Signup Functionality may not be present on this site. Signup link is not present in header.");
+		}
 		return new SignUpPage(driver);
 	}
 }

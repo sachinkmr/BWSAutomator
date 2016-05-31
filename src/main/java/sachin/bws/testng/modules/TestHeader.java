@@ -21,8 +21,8 @@ public class TestHeader {
 
 	@BeforeSuite(alwaysRun = true)
 	public void setup() {
-		site = new SiteBuilder("http://www.hellmanns.com/").setBrandName("Lipton").setCulture("en-US")
-				.setEnvironment("PROD").setTimeout(60).build();
+		site = new SiteBuilder("http://www.liptontea.ca/").setBrandName("Lipton").setCulture("en-US")
+				.setEnvironment("UAT").setTimeout(60).build();
 		builder = new WebDriverBuilder();
 		driver = builder.getFirefoxDriver(site);
 		siteUrl = site.getUrl();

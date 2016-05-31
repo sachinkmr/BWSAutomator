@@ -6,16 +6,4 @@
       <class name="sachin.bws.testng.modules.TestHeader"/>
     </classes>
   </test> <!-- Default test -->
-  <test name="Default test(failed)">
-    <classes>
-      <class name="sachin.bws.testng.modules.TestHeader">
-        <methods>
-          <include name="tearDown"/>
-          <include name="initHeader"/>
-          <include name="setup"/>
-          <include name="testSignUpLink"/>
-        </methods>
-      </class> <!-- sachin.bws.testng.modules.TestHeader -->
-    </classes>
-  </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->
