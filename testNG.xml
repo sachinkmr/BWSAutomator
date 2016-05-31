@@ -3,7 +3,7 @@
 <suite name="BWS Automator" verbose="1">
 	<test name="Demo">
 		<classes>
-			<class name="sachin.bws.site.TestNG" />
+			<class name="sachin.bws.testng.modules.TestHeader" />
 		</classes>
 	</test>
 </suite>

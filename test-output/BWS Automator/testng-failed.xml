@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Failed suite [BWS Automator]">
+<suite guice-stage="DEVELOPMENT" name="Failed suite [BWS Automator]">
   <test name="Demo">
     <classes>
-      <class name="sachin.bws.site.TestNG"/>
+      <class name="sachin.bws.testng.modules.TestHeader"/>
     </classes>
   </test> <!-- Demo -->
+  <test name="Demo(failed)">
+    <classes>
+      <class name="sachin.bws.testng.modules.TestHeader">
+        <methods>
+          <include name="tearDown"/>
+          <include name="initHeader"/>
+          <include name="setup"/>
+          <include name="testSignUpLink"/>
+        </methods>
+      </class> <!-- sachin.bws.testng.modules.TestHeader -->
+    </classes>
+  </test> <!-- Demo(failed) -->
 </suite> <!-- Failed suite [BWS Automator] -->
